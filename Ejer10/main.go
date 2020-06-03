@@ -4,17 +4,23 @@ import (
 	"fmt"
 )
 
+type servivo interface {
+	estavivo() bool
+}
+
 type humano interface {
 	respirar()
 	pensar()
 	comer()
 	sexo() string
+	estavivo() bool
 }
 
 type animal interface {
 	respirar()
 	comer()
 	Escarnivoro() bool
+	estavivo() bool
 }
 
 type vegetal interface {
@@ -31,6 +37,7 @@ type hombre struct {
 	pensando   bool
 	comiendo   bool
 	esHombre   bool
+	vivo       bool
 }
 
 /*mujer*/
@@ -48,10 +55,11 @@ func (h *hombre) sexo() string {
 	}
 	return "Mujer"
 }
+func (h *hombre) estavivo() bool { return h.vivo }
 
 func humanosrespirando(hu humano) {
 	hu.respirar()
-	fmt.Printf("Soy un/a %s y estoy respirando\n", hu.sexo())
+	fmt.Printf("Soy un/a %s estoy respirando y estoy vivo %t\n", hu.sexo(), hu.estavivo())
 }
 
 /* Gnero anumal */
@@ -62,15 +70,16 @@ type perro struct {
 	respirando bool
 	comiendo   bool
 	carnivoro  bool
+	vivo       bool
 }
 
 func (p *perro) respirar()         { p.respirando = true }
 func (p *perro) comer()            { p.comiendo = true }
 func (p *perro) Escarnivoro() bool { return p.carnivoro }
+func (p *perro) estavivo() bool    { return p.vivo }
 
 func animalesrespirar(an animal) {
 	an.respirar()
-	fmt.Println("Soy un animal y estoy respirando")
 }
 
 func animalescarnivoro(an animal) int {
@@ -81,21 +90,30 @@ func animalescarnivoro(an animal) int {
 
 }
 
+/* ser vivio */
+
+func estoyvivo(v servivo) bool {
+	return v.estavivo()
+}
+
 func main() {
 	tcarrnivoro := 0
 
 	Pedro := new(hombre)
+	Pedro.vivo = true
 	Pedro.esHombre = true
 	humanosrespirando(Pedro)
 
 	Maria := new(mujer)
+	Maria.vivo = false
 	humanosrespirando(Maria)
 
 	Drogo := new(perro)
 	Drogo.carnivoro = true
+	Drogo.vivo = true
 	animalesrespirar(Drogo)
 	tcarrnivoro = +animalescarnivoro(Drogo)
 
-	fmt.Printf("Carnivoros %d\n", tcarrnivoro)
+	fmt.Printf("Soy un animal estoy respirando y estoy vivo %t Carnivoros %d\n", estoyvivo(Drogo), tcarrnivoro)
 
 }
